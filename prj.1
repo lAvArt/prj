@@ -1,0 +1,122 @@
+.TH PRJ 1 "2026-10-05" "prj 0.1.0" "User Commands"
+.SH NAME
+prj \- pick a project from a list and open it in your agent, editor or shell
+.SH SYNOPSIS
+.B prj
+.RI [ query ]
+.RB [ \-o
+.IR mode ]
+.RB [ \-r
+.IR command ]
+.RB [ \-\-
+.IR args... ]
+.br
+.B prj
+.BR \-p | \-l
+.RI [ query ]
+.br
+.B prj
+.BR \-\-setup | \-\-doctor | \-\-edit | \-\-uninstall
+.SH DESCRIPTION
+.B prj
+lists the git repositories found in your project folders and opens the one you pick.
+Without a query it shows an
+.BR fzf (1)
+picker with a git log and status preview. With a query it opens the project whose name matches exactly, or the
+only fuzzy match, or the picker filtered by the query.
+.PP
+Projects are sorted with pinned ones first, then by how often and how recently you opened them, then by the
+date of their last commit. Repositories nested inside another repository are not listed.
+.PP
+Opening a project types the configured
+.I run
+command into an interactive shell in the project folder, so shell aliases and functions work.
+.SH OPTIONS
+.TP
+.BI \-o " mode" "\fR, \fP\-\-open " mode
+Where to open the project:
+.B auto
+(a new herdr tab or tmux window when running inside one, otherwise the current terminal),
+.BR herdr\-tab ,
+.BR tmux\-window ,
+or
+.BR here .
+.TP
+.BI \-r " command" "\fR, \fP\-\-run " command
+Run this instead of the configured command.
+.TP
+.BI \-\- " args..."
+Append these arguments, quoted, to the run command.
+.TP
+.BR \-p ", " \-\-path
+Print the project path instead of opening it.
+.TP
+.BR \-l ", " \-\-list
+List projects.
+.B \-\-tsv
+prints name, branch, last commit date, path and a pinned flag, separated by tabs.
+.TP
+.B \-\-setup
+Run the setup wizard: choose project folders, the run command, the open mode and the names of the shell commands
+to install. Re-running it edits the existing configuration. With
+.BR \-\-yes ,
+it uses detected or existing values; each answer also has a flag:
+.BR \-\-roots ,
+.BR \-\-run ,
+.BR \-\-open ,
+.BR \-\-name ,
+.BR \-\-cd\-name ,
+.BR \-\-no\-shell ,
+.BR \-\-no\-skill .
+.TP
+.B \-\-doctor
+Check dependencies, project folders and shell integration.
+.TP
+.B \-\-edit
+Open the configuration file in
+.BR $EDITOR .
+.TP
+.B \-\-uninstall
+Remove the shell hooks, shell files and Claude Code skill that setup added. The configuration and usage history
+are kept.
+.SH FILES
+.TP
+.I ~/.config/prj/config
+Settings:
+.BR roots ,
+.BR depth ,
+.BR run ,
+.BR open ,
+.BR pinned ,
+.BR exclude ,
+.BR name ,
+.BR cd_name .
+Lists are comma separated.
+.TP
+.I ~/.config/prj/shell.sh
+Shell functions and completion, loaded from
+.I ~/.bashrc
+or
+.IR ~/.zshrc .
+.TP
+.I ~/.local/state/prj/history
+Usage history used for sorting.
+.TP
+.I ~/.claude/skills/repo/SKILL.md
+Claude Code skill installed by setup.
+.SH ENVIRONMENT
+.TP
+.B PRJ_CONFIG
+Use a different configuration file.
+.TP
+.B PRJ_STATE_DIR
+Directory for the usage history.
+.TP
+.B PRJ_SCAN_MOUNTS
+Directories whose subfolders setup scans for mounted drives.
+.SH EXIT STATUS
+0 on success, 1 on errors such as an unknown or ambiguous query without a terminal, 130 when the picker is cancelled.
+.SH SEE ALSO
+.BR fzf (1),
+.BR git (1),
+.BR tmux (1)

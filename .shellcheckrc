@@ -1,0 +1,5 @@
+# prj writes shell code and ~-relative paths as literal text, so these are expected:
+# SC2016: $vars inside single quotes are meant for the generated code, not for expansion here
+# SC2088: "~/" is printed for display, never used as a path
+# SC2015: `A && check ... || check ...` is safe because check always succeeds
+disable=SC2016,SC2088,SC2015

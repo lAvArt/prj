@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck -x prj install.sh tests/run.sh
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            bash: bash
+          - os: macos-latest
+            bash: /bin/bash   # bash 3.2
+          - os: macos-latest
+            bash: bash        # Homebrew bash 5
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update -q && sudo apt-get install -yq fzf
+      - if: runner.os == 'macOS'
+        run: brew install fzf bash
+      - run: tests/run.sh ${{ matrix.bash }}
