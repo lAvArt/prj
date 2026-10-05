@@ -7,6 +7,7 @@ BASH_BIN="${1:-bash}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 PRJ="$ROOT/prj"
 T="$(mktemp -d "${TMPDIR:-/tmp}/prj-test.XXXXXX")"
+T="$(cd "$T" && pwd)"   # macOS TMPDIR ends in a slash, which would leave // in every path
 trap 'rm -rf "$T"' EXIT
 
 export HOME="$T/home" SHELL=/bin/bash XDG_CONFIG_HOME="" XDG_STATE_HOME=""
@@ -99,13 +100,14 @@ check "old use counts less than recent use" '[ "$(prj -l --tsv | sed -n 2p | cut
 echo "opening"
 out="$(cd / && prj beta -o here 2>&1)"
 check "runs the configured command" '[ "$out" = opened ]' "$out"
-real_beta="$(cd "$C/beta" && pwd -P)"   # /bin/pwd reports the physical path (macOS TMPDIR is a symlink)
+# GNU /bin/pwd prints the physical path, BSD's the logical one; macOS TMPDIR sits behind a symlink
+real_beta="$(cd "$C/beta" && pwd -P)"
 out="$(cd / && prj beta -o here -r pwd 2>&1)"
-check "runs in the project folder" '[ "$out" = "$real_beta" ]' "$out"
+check "runs in the project folder" '[ "$out" = "$real_beta" ] || [ "$out" = "$C/beta" ]' "$out"
 out="$(prj beta -o here -r "printf [%s]" -- --continue "a b" 2>&1)"
 check "passes extra args with quoting" '[ "$out" = "[--continue][a b]" ]' "$out"
 out="$(prj beta -o herdr-tab -r pwd 2>&1)"
-check "falls back to here outside herdr" '[[ $out == *"not inside herdr"* && $out == *"$real_beta"* ]]' "$out"
+check "falls back to here outside herdr" '[[ $out == *"not inside herdr"* ]] && [[ $out == *"$real_beta"* || $out == *"$C/beta"* ]]' "$out"
 out="$(prj beta -o nonsense 2>&1)"; rc=$?
 check "rejects unknown open modes" '[ $rc = 1 ] && [[ $out == *"unknown open mode"* ]]' "$out"
 
