@@ -99,12 +99,13 @@ check "old use counts less than recent use" '[ "$(prj -l --tsv | sed -n 2p | cut
 echo "opening"
 out="$(cd / && prj beta -o here 2>&1)"
 check "runs the configured command" '[ "$out" = opened ]' "$out"
+real_beta="$(cd "$C/beta" && pwd -P)"   # /bin/pwd reports the physical path (macOS TMPDIR is a symlink)
 out="$(cd / && prj beta -o here -r pwd 2>&1)"
-check "runs in the project folder" '[ "$out" = "$C/beta" ]' "$out"
+check "runs in the project folder" '[ "$out" = "$real_beta" ]' "$out"
 out="$(prj beta -o here -r "printf [%s]" -- --continue "a b" 2>&1)"
 check "passes extra args with quoting" '[ "$out" = "[--continue][a b]" ]' "$out"
 out="$(prj beta -o herdr-tab -r pwd 2>&1)"
-check "falls back to here outside herdr" '[[ $out == *"not inside herdr"* && $out == *"$C/beta"* ]]' "$out"
+check "falls back to here outside herdr" '[[ $out == *"not inside herdr"* && $out == *"$real_beta"* ]]' "$out"
 out="$(prj beta -o nonsense 2>&1)"; rc=$?
 check "rejects unknown open modes" '[ $rc = 1 ] && [[ $out == *"unknown open mode"* ]]' "$out"
 

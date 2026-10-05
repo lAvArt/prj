@@ -254,10 +254,10 @@ candidate_roots() {
     done
   } | while IFS= read -r c; do
     [ -d "$c" ] || continue
-    c="$(cd "$c" 2>/dev/null && pwd -P)" || continue
+    real="$(cd "$c" 2>/dev/null && pwd -P)" || continue   # only to spot the same folder reached twice
     n="$(count_repos "$c")"
-    [ "$n" -gt 0 ] && printf '%s\t%s\n' "$n" "$c"
-  done | sort -t"$TAB" -k2,2 -u | sort -t"$TAB" -k1,1nr
+    [ "$n" -gt 0 ] && printf '%s\t%s\t%s\n' "$n" "$c" "$real"
+  done | sort -t"$TAB" -k3,3 -u | sort -t"$TAB" -k1,1nr | cut -f1,2
 }
 
 use_gum() { have gum && has_tty; }
@@ -477,7 +477,8 @@ setup() {
     if [ $existing = 1 ]; then opts=("${RUN:-(nothing, just a shell)} (current)" "${opts[@]}"); fi
     RUN="$(ask_choose 'What should open in a project?' "${opts[@]}")"
     RUN="${RUN% (current)}"
-  elif [ $existing = 0 ]; then RUN="$(run_options | head -1)"; fi
+  elif [ $existing = 0 ]; then RUN="$(run_options)" RUN="${RUN%%
+*}"; fi
   [ "$RUN" = '(nothing, just a shell)' ] && RUN=""
 
   if [ -n "$S_OPEN" ]; then OPEN="$S_OPEN"
@@ -642,7 +643,7 @@ have fzf || die "fzf is required (install it with your package manager)"
 case "$MODE" in
   names) discover | sed 's#.*/##' ;;
   list)
-    [ -n "$(discover | head -1)" ] || no_projects
+    [ -n "$(discover)" ] || no_projects
     if [ -n "$TSV" ]; then list_rows | awk -F'\t' -v OFS='\t' '{ print $4, $5, $3, $6, ($1 < 999) ? "pinned" : "" }'
     else list_rows | format_rows | awk -F'\t' '{ printf "%s  %s\n", $1, $2 }'; fi
     ;;
