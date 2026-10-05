@@ -1,5 +1,7 @@
 # prj
 
+[![ci](https://github.com/lAvArt/prj/actions/workflows/ci.yml/badge.svg)](https://github.com/lAvArt/prj/actions/workflows/ci.yml)
+
 Pick one of your projects from a list and open it in your AI coding agent, editor or shell.
 
 ```
