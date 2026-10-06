@@ -18,7 +18,7 @@
 #
 # Needs bash, git and fzf. Uses gum, jq, herdr and tmux when present.
 
-PRJ_VERSION=0.1.0
+PRJ_VERSION=0.1.1
 
 CONFIG="${PRJ_CONFIG:-${XDG_CONFIG_HOME:-$HOME/.config}/prj/config}"
 CONFIG_DIR="$(dirname "$CONFIG")"
@@ -142,6 +142,16 @@ no_projects() {
   die "no git repos found under: $(join "${ROOTS[@]}")"
 }
 
+# Preview on the right, hidden on narrow terminals. fzf before 0.31 rejects the size threshold
+# (and the whole picker with it), so fall back to the older syntax there.
+preview_layout() {
+  if printf 'x\n' | fzf --filter x --preview-window='right,50%,<50(hidden)' >/dev/null 2>&1; then
+    printf '%s' 'right,50%,<50(hidden)'
+  else
+    printf '%s' 'right:50%'
+  fi
+}
+
 # pick [query] -> prints the chosen path
 pick() {
   local query="$1" rows matches n
@@ -166,7 +176,7 @@ pick() {
     fzf --query="$query" --delimiter="$TAB" --with-nth=1 --height=60% --reverse \
       --prompt="$NAME> " --header='enter: open   esc: cancel   * pinned' \
       --preview='git -C {2} log --oneline -8 --color=always 2>/dev/null; echo; git -C {2} status -sb 2>/dev/null | head -15' \
-      --preview-window='right,50%,<100(hidden)' | cut -f2
+      --preview-window="$(preview_layout)" | cut -f2
 }
 
 record() {

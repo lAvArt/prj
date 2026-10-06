@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 - 2026-10-06
+
+- Fix: the preview pane only appeared on terminals over 200 columns wide; it now hides below about 100
+- Fix: with fzf older than 0.31 (Ubuntu 22.04, Debian 11) the picker failed to open; it now falls back to a
+  fixed preview, and works back to fzf 0.24
+- Packaging: AUR PKGBUILD in `packaging/aur`, Homebrew formula in lAvArt/homebrew-tap
+
 ## 0.1.0 - 2026-10-05
 
 First release.

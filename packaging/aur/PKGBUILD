@@ -1,0 +1,29 @@
+# Maintainer: lAvArt Studio <a.v.arch@hotmail.com>
+pkgname=prj
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Project picker: fuzzy-pick a git repo and open it in Claude Code, Codex, your editor or a new herdr/tmux tab"
+arch=('any')
+url="https://github.com/lAvArt/prj"
+license=('MIT')
+depends=('bash' 'git' 'fzf')
+optdepends=(
+  'gum: nicer setup wizard'
+  'jq: herdr integration without the grep fallback'
+  'herdr: open projects in herdr tabs'
+  'tmux: open projects in tmux windows'
+)
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('dd1cd4d6b747a9288c6ba270bdd68bace9591ea8b69e2ac51ad8801f8b8c32be')
+
+check() {
+  cd "$pkgname-$pkgver"
+  ./tests/run.sh
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make install DESTDIR="$pkgdir" PREFIX=/usr
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}

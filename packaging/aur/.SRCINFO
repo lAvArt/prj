@@ -1,0 +1,18 @@
+pkgbase = prj
+	pkgdesc = Project picker: fuzzy-pick a git repo and open it in Claude Code, Codex, your editor or a new herdr/tmux tab
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/lAvArt/prj
+	arch = any
+	license = MIT
+	depends = bash
+	depends = git
+	depends = fzf
+	optdepends = gum: nicer setup wizard
+	optdepends = jq: herdr integration without the grep fallback
+	optdepends = herdr: open projects in herdr tabs
+	optdepends = tmux: open projects in tmux windows
+	source = prj-0.1.0.tar.gz::https://github.com/lAvArt/prj/archive/refs/tags/v0.1.0.tar.gz
+	sha256sums = dd1cd4d6b747a9288c6ba270bdd68bace9591ea8b69e2ac51ad8801f8b8c32be
+
+pkgname = prj
