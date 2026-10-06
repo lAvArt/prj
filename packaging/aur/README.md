@@ -9,3 +9,5 @@ To release a new version:
 3. Build and test locally: `makepkg -f` (runs the test suite in `check()`)
 4. Regenerate metadata: `makepkg --printsrcinfo > .SRCINFO`
 5. Copy `PKGBUILD` and `.SRCINFO` into the AUR clone (`ssh://aur@aur.archlinux.org/prj.git`), commit, push.
+6. Attach the built package to the GitHub release, and update the `pacman -U` URL in the main README:
+   `PACKAGER="lAvArt Studio <a.v.arch@hotmail.com>" makepkg -f && gh release upload vX.Y.Z prj-X.Y.Z-1-any.pkg.tar.zst`

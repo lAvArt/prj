@@ -27,11 +27,19 @@ prj api        # open the project matching "api" directly
 <details open>
 <summary><b>Omarchy and Arch Linux</b></summary>
 
+Install the package with pacman (tracked by pacman, removed with `sudo pacman -R prj`):
+
 ```sh
-curl -fsSL https://raw.githubusercontent.com/lAvArt/prj/main/install.sh | sh
+sudo pacman -U https://github.com/lAvArt/prj/releases/download/v0.1.1/prj-0.1.1-1-any.pkg.tar.zst
+prj --setup
 ```
 
-Omarchy already has everything prj needs. On plain Arch: `sudo pacman -S --needed git fzf gum`.
+Or build it yourself from the PKGBUILD: `git clone https://github.com/lAvArt/prj && cd prj/packaging/aur && makepkg -si`.
+Or use the install script, which puts prj in `~/.local/bin`:
+`curl -fsSL https://raw.githubusercontent.com/lAvArt/prj/main/install.sh | sh`
+
+Omarchy already has everything prj needs. An AUR package (`yay -S prj`) is ready and will be published once the AUR
+reopens account registration.
 </details>
 
 <details open>
