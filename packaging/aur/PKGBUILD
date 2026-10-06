@@ -1,6 +1,6 @@
 # Maintainer: lAvArt Studio <a.v.arch@hotmail.com>
 pkgname=prj
-pkgver=0.1.0
+pkgver=0.1.1
 pkgrel=1
 pkgdesc="Project picker: fuzzy-pick a git repo and open it in Claude Code, Codex, your editor or a new herdr/tmux tab"
 arch=('any')
@@ -14,7 +14,7 @@ optdepends=(
   'tmux: open projects in tmux windows'
 )
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('dd1cd4d6b747a9288c6ba270bdd68bace9591ea8b69e2ac51ad8801f8b8c32be')
+sha256sums=('1c85df05a7b8bbd253179188a68d4bb53eb102db50e8455b9d4e1a082d6b0892')
 
 check() {
   cd "$pkgname-$pkgver"
